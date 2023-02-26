@@ -39,24 +39,7 @@ Question 3
 
 Question 4
 
-In a sliding window protocol with RWS=SWS=10, if the next frame expected is 21, the receiver is currently expecting frames 21 through 30, inclusive. Any frame with a sequence number less than 21 or greater than 30 would be impossible to arrive at the receiver.
 
-Therefore, the following frames are impossible to arrive at the receiver:
-
--   Frames with sequence numbers 1 to 20
--   Frames with sequence numbers greater than 30
-
-Note that the frame with sequence number 31 is the next frame after the current receive window, and it is possible for it to arrive at the receiver as long as frames 21 to 30 have already been received and acknowledged.
-
-In a sliding window protocol with RWS=SWS=10, if the next frame expected is 21, then the receiver is expecting frames with sequence numbers 21, 22, 23, ..., 30.
-
-Therefore, the following frame(s) are impossible to arrive to the receiver:
-
--   10, since it is too far behind the expected next frame.
--   15 and 20, since they have already been received by the receiver (assuming no duplicate frames).
--   30, since it is too far ahead of the expected next frame.
-
-The only remaining frame from the given options is 25, which is within the receiver's window and could potentially be received.
 
 Question 5
 
