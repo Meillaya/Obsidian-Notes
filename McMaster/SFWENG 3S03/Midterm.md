@@ -79,14 +79,16 @@ Three exploratory tests that could test the veracity of this program's calculati
 
 1. Test for erroneous or unusual inputs, so inputs that are valid but result in an incorrect car insurance payment. For example, an input area code for a place that no longer exists or has been renovated, re-developed (new postal code) or moved. With such a value the program will return a value, but it won't be correct and such cases need to be accounted for.
 2. Test for consistency between input values. For example, an input value of age 50 and years of driving 0 would not make any sense, or should at least escalate the customer's application to be investigated and verify their information and extenuating circumstances. 
-3. Test for invalid combinations of input values. The program needs to account for an incorrect combination of values, that while valid and result in a return value, are not correct and need to be accounted for. For example, an inp
+3. Test for invalid combinations of input values. The program needs to account for an incorrect combination of values, that while valid and result in a return value, are not correct and need to be accounted for. For example, an input age of 15. and number of claims 10, makes no sense and the program needs to account for such cases.
 
-	
 
 (d)
 
-One way to improve the specification of this program is to define more explicitly how the input values are used to calculate the insurance payment. This could be done by providing detailed information on the company's policy, including how each input value affects the insurance payment, and by providing a clear formula or algorithm for the calculation.
+One way to improve this program's specification is to properly define the bounds of the input values and their restrictions in relation to the company's policies and state regulations. This can be achieved by stipulating the ways in which the algorithm should function to meet the company's needs, or by even providing an explicit formula that the company uses and how the input values relate to the formula.
 
-This improvement would be beneficial because it would make the program more transparent and easier to understand for users, such as insurance agents or customers. It would also make it easier to validate the correctness of the program, as it would be clear what inputs and calculations are involved in the insurance payment calculation. Additionally, it would make it easier to modify or update the program in the future if the company's policy or calculation method changes.
-# Question 2
+These improvements will make it easier to check for the program's correctness, and it would potentially make it easier to iterate over, as strong fundamentals of the program will have been established and more focus can be put toward QOL improvements for both users and insurance agents.
+
+
+
+References:
 
