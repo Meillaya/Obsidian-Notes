@@ -86,9 +86,14 @@ Three exploratory tests that could test the veracity of this program's calculati
 
 One way to improve this program's specification is to properly define the bounds of the input values and their restrictions in relation to the company's policies and state regulations. This can be achieved by stipulating the ways in which the algorithm should function to meet the company's needs, or by even providing an explicit formula that the company uses and how the input values relate to the formula.
 
-These improvements will make it easier to check for the program's correctness, and it would potentially make it easier to iterate over, as strong fundamentals of the program will have been established and more focus can be put toward QOL improvements for both users and insurance agents.
+These improvements will make it easier to check for the program's correctness, and it would potentially make it easier to iterate over. If strong fundamentals of the program have been established, more focus can be put toward QOL improvements  for both users and insurance agents.
 
 
 
-References:
+**References:**
 
+- *ChatGPT (code is entirely mine)*
+
+- *Lecture notes*
+
+- *Personal Notes*
