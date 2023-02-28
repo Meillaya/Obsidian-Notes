@@ -57,7 +57,13 @@ The other statements are false:
 
 # Question 4
 
+In a sliding window protocol, the sender can transmit multiple frames at once without waiting for the acknowledgment of the previous frames. The receiver maintains a window of the frames it expects to receive next.
 
+In this case, we have a sliding window protocol with a window size of 10, meaning that the receiver is expecting frames with sequence numbers 21 through 30. The receiver can receive any frame within this window and acknowledge it.
+
+Out of the options given, the only impossible frame to arrive is 10. This is because the receiver is currently expecting frames with sequence numbers 21 through 30, and any frame with a sequence number less than 21 has already been acknowledged and is no longer expected.
+
+Frames 15, 20, 25, and 30 are all within the receiver's current window and can be received and acknowledged. However, frame 10 is not within the current window and has already been acknowledged, so it is impossible for it to arrive again.
 
 # Question 5
 
