@@ -1,22 +1,25 @@
-### Question 1
+# Question 1
 
-To determine the minimum number of bits required for the sequence number in a sliding window protocol, we need to consider the maximum number of frames that can be in transit at any given time.
+The sliding window protocol uses sequence numbers to keep track of the order in which frames are sent and received, and to detect and recover from lost or corrupted frames. The number of bits needed for the sequence number depends on the size of the sliding window, which in turn depends on the round trip time (RTT) and the maximum transmission rate (in bits per second) of the network.
 
-First, we need to calculate the maximum number of frames that can be in transit using the given bandwidth and round trip latency.
+To calculate the sliding window size, we first need to determine the maximum number of unacknowledged frames that can be in transit at any given time, which is given by:
 
-Bandwidth-delay product = bandwidth x round trip latency = 10Mbps x 0.5s = 5,000,000 bits
+`window_size = (transmission_rate * RTT) / frame_size`
 
-This is the maximum amount of data that can be "in flight" at any given time.
+where transmission_rate is the maximum transmission rate of the network in bits per second, RTT is the round trip time in seconds, and frame_size is the size of each frame in bytes.
 
-Next, we need to determine the maximum number of frames that can be in transit at any given time, given that each frame carries 20KB (20,480 bytes) of data.
+In this case, we have:
 
-Maximum number of frames in transit = Bandwidth-delay product / Frame size = 5,000,000 bits / 20,480 bytes = 244.14 frames
+```
+transmission_rate = 10Mbps = 10,000,000 bps
+RTT = 0.5 sec
+frame_size = 20KB = 20,000 bytes
+```
 
-Since the number of frames must be a whole number, we can round up to 245 frames.
+Plugging these values into the formula, we get:
 
-To represent 245 unique frame numbers, we need at least 8 bits (2^8 = 256). Therefore, the minimum number of bits required for the sequence number is 8.
 
-### Question 2
+# Question 2
 
 The following statement is true about the routing algorithms:
 
