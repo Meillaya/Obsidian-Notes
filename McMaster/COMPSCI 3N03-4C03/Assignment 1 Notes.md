@@ -64,11 +64,11 @@ Since there are horizontal and vertical parity bits in this block of bits, it is
 
 To calculate the probability of failure to detect the error, we need to consider the possibility that the 4 bits are inverted in a way that neither the horizontal nor the vertical parity bits can detect the error. This would happen if 2 bits are inverted in the same row and 2 bits are inverted in the same column, but not in the same row and column.
 
-The number of ways to choose 2 bits from a row is C(6, 2) = 15, and the number of ways to choose 2 bits from a column is C(5, 2) = 10. The total number of ways to choose 4 bits is C(30, 4) = 3003. So the probability of failure to detect the error is:
+The number of ways to choose 2 bits from a row is C(6, 2) = 15, and the number of ways to choose 2 bits from a column is C(5, 2) = 10. The total number of ways to choose 4 bits is C(30, 4) = 27, 405. So the probability of failure to detect the error is:
 
-(15 * 10)/3003 = 0.05
+(15 * 10)/27405 = 0.05
 
-So the probability of failure to detect the error is 0.05, or 5%.
+So the probability of failure to detect the error is 0.005, or 0.5%.
 ## Question 4
 CRC (Cyclic Redundancy Check) is a technique for error detection that involves dividing the data bit sequence by a predetermined polynomial (generator polynomial) and using the remainder as the checksum. In this case, the 11-bit message is "10111010100" and the generator polynomial is x^4 + x^3 + 1.
 
