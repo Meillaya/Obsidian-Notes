@@ -66,7 +66,19 @@ To calculate the probability of failure to detect the error, we need to consider
 
 The number of ways to choose 2 bits from a row is C(6, 2) = 15, and the number of ways to choose 2 bits from a column is C(5, 2) = 10. The total number of ways to choose 4 bits is C(30, 4) = 27, 405. So the probability of failure to detect the error is:
 
-(15 * 10)/27405 = 0.05
+We can simplify the expression using the formula for combinations, also known as binomial coefficients:
+
+nCk = n! / (k! * (n-k)!)
+
+where n! means n factorial, which is the product of all positive integers up to n. For example, 5! = 5_4_3_2_1 = 120.
+
+Using this formula, we can calculate each of the binomial coefficients involved in the expression:
+
+6C2 = 6! / (2! * (6-2)!) = 15 5C2 = 5! / (2! * (5-2)!) = 10 30C4 = 30! / (4! * (30-4)!) = 27,405
+
+Now we can substitute these values into the original expression and simplify:
+
+((6C2)(5C2))/(30C4) = (15*10)/27,405 = 150/27,405 
 
 So the probability of failure to detect the error is 0.005, or 0.5%.
 ## Question 4
