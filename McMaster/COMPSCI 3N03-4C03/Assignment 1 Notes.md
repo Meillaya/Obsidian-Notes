@@ -51,6 +51,7 @@ C = B * log2(1 + S/N) = 6 * log2(1 + 10^3/31.62) = 6 * log2(31.62 + 1) = 6 * log
 Therefore, the maximum bit rate on this channel is approximately 30 Mbps.
 
 ## Question 3
+
 In a block of bits with 5 rows and 6 columns including horizontal and vertical parity bits, the total number of bits is 5 * 6 + 2 * 6 + 2 * 5 = 40. If exactly 4 bits are inverted due to transmission errors, the probability that the error will go undetected depends on the specific location of the inverted bits. If the inverted bits are located in a way that they do not affect the horizontal or vertical parity, then the error will go undetected. To estimate the probability, we can calculate the number of combinations of 4 bits that do not affect the parity and divide that by the total number of combinations of 4 bits.
 
 For example, consider the case where the 4 inverted bits are located in 4 different rows. In this case, the horizontal parity will still be correct. If we choose the 4 bits randomly, the number of combinations is C(5,4) = 5, and the probability of error detection is 1 - 5/C(40,4) = 1 - 5/91390. This is an upper bound on the probability of error detection, since the 4 inverted bits could be located in less than 4 different rows.
@@ -132,102 +133,49 @@ So the Hamming code to be transmitted is "011100101010".
 ```
 
 ## Question 6
-To check if the received codes are valid even parity Hamming codes, we need to perform the following steps:
 
-1.  Count the number of parity bits, p. In an even parity Hamming code, the number of parity bits is given by p = log2(m + p + 1), where m is the number of message bits.
-    
-2.  Identify the position of the parity bits. In an even parity Hamming code, the parity bits are located at positions that are powers of 2 (1, 2, 4, 8, ...).
-    
-3.  Calculate the parity for each parity bit. For each parity bit, calculate the parity of the bits in its corresponding group (i.e., the bits that the parity bit covers).
-    
-4.  Compare the calculated parity with the received parity. If the calculated parity matches the received parity, the code is valid. Otherwise, there is an error in the code.
-    
+To determine whether each Hamming code is valid or not, we need to perform the following steps:
 
-Let's apply these steps to the received codes:
+Step 1: Count the number of parity bits (p) in the Hamming code.
+Step 2: Calculate the value of each parity bit using even parity (i.e., the parity bit is 0 if the number of 1s in the corresponding data bits is even, and 1 otherwise).
+Step 3: Compare the calculated parity bits with the parity bits in the Hamming code. If they match, the Hamming code is valid; otherwise, it contains errors.
 
-1.  We have 12 bits in each code, so m = 4 and p = log2(4 + p + 1) = 3. Therefore, there are 3 parity bits in each code.
-    
-2.  The parity bits are located at positions 1, 2, and 4.
-    
-3.  For the first code (010101100010), we have:
-    
+Let's apply these steps to the given Hamming codes:
 
--   Parity bit P1 covers bits 1, 3, 5, 7, 9, and 11. The parity of these bits is 1, so P1 should be 0.
--   Parity bit P2 covers bits 2, 3, 6, 7, 10, and 11. The parity of these bits is 2, so P2 should be 1.
--   Parity bit P4 covers bits 4, 5, 6, 7, and 12. The parity of these bits is 3, so P4 should be 1.
+Hamming code 1: 0 1 0 1 0 1 1 0 0 0 1 0
+Step 1: There are 4 parity bits in this Hamming code.
+Step 2:
+Parity bit P1 = D3 ⊕ D5 ⊕ D7 ⊕ D9 ⊕ D11 = 0 ⊕ 0 ⊕ 1 ⊕ 0 ⊕ 1 = 0
+Parity bit P2 = D3 ⊕ D6 ⊕ D7 ⊕ D10 ⊕ D11 = 0 ⊕ 1 ⊕ 1 ⊕ 0 ⊕ 1 = 1
+Parity bit P3 = D5 ⊕ D6 ⊕ D7 ⊕ D12 = 1 ⊕ 1 ⊕ 1 ⊕ 0 = 1
+Parity bit P4 = D9 ⊕ D10 ⊕ D11 ⊕ D12 = 0 ⊕ 0 ⊕ 1 ⊕ 0 = 1
+Step 3: The parity bits in the Hamming code are 1 1 1 1, which do not match the calculated parity bits 0 1 1 1. Therefore, this Hamming code contains errors.
 
-Therefore, the calculated parity for this code is 011, which is not equal to the received parity (000). This means that there is an error in the code.
+Hamming code 2: 1 1 1 1 1 0 0 0 1 1 0 0
+Step 1: There are 4 parity bits in this Hamming code.
+Step 2:
+Parity bit P1 = D3 ⊕ D5 ⊕ D7 ⊕ D9 ⊕ D11 = 1 ⊕ 0 ⊕ 0 ⊕ 1 ⊕ 0 = 0
+Parity bit P2 = D3 ⊕ D6 ⊕ D7 ⊕ D10 ⊕ D11 = 1 ⊕ 0 ⊕ 0 ⊕ 1 ⊕ 0 = 0
+Parity bit P3 = D5 ⊕ D6 ⊕ D7 ⊕ D12 = 0 ⊕ 0 ⊕ 0 ⊕ 0 = 0
+Parity bit P4 = D9 ⊕ D10 ⊕ D11 ⊕ D12 = 1 ⊕ 1 ⊕ 0 ⊕ 0 = 0
+Step 3: The parity bits in the Hamming code are 1 0 0 0, which do not match the calculated parity bits 0 0 0 0. Therefore, this Hamming code contains errors.
 
-For the second code (111110001100), we have:
+Hamming code 3: 0 1 0 1 0 1 1 0 0 0 1 1
+Step 1: There are 4 parity bits in this Hamming code.
+Step 2:
+Parity bit P1 = D3 ⊕ D5 ⊕ D7 ⊕ D9 ⊕ D11 = 0 ⊕ 01 ⊕ 1 ⊕ 1 = 0
+Parity bit P2 = D3 ⊕ D6 ⊕ D7 ⊕ D10 ⊕ D11 = 0 ⊕ 1 ⊕ 1 ⊕ 0 ⊕ 1 = 1
+Parity bit P3 = D5 ⊕ D6 ⊕ D7 ⊕ D12 = 1 ⊕ 1 ⊕ 1 ⊕ 1 = 0
+Parity bit P4 = D9 ⊕ D10 ⊕ D11 ⊕ D12 = 0 ⊕ 0 ⊕ 1 ⊕ 1 = 0
+Step 3: The parity bits in the Hamming code are 0 1 0 0, which match the calculated parity bits 0 1 0 0. Therefore, this Hamming code is valid.
 
--   Parity bit P1 covers bits 1, 3, 5, 7, 9, and 11. The parity of these bits is 4, so P1 should be 0.
--   Parity bit P2 covers bits 2, 3, 6, 7, 10, and 11. The parity of these bits is 2, so P2 should be 1.
--   Parity bit P4 covers bits 4, 5, 6, 7, and 12. The parity of these bits is 3, so P4 should be 1.
+Hamming code 4: 0 0 0 0 1 0 0 0 1 0 1 0
+Step 1: There are 4 parity bits in this Hamming code.
+Step 2:
+Parity bit P1 = D3 ⊕ D5 ⊕ D7 ⊕ D9 ⊕ D11 = 0 ⊕ 1 ⊕ 0 ⊕ 0 ⊕ 1 = 0
+Parity bit P2 = D3 ⊕ D6 ⊕ D7 ⊕ D10 ⊕ D11 = 0 ⊕ 0 ⊕ 0 ⊕ 1 ⊕ 1 = 0
+Parity bit P3 = D5 ⊕ D6 ⊕ D7 ⊕ D12 = 1 ⊕ 0 ⊕ 0 ⊕ 0 = 1
+Parity bit P4 = D9 ⊕ D10 ⊕ D11 ⊕ D12 = 0 ⊕ 1 ⊕ 1 ⊕ 0 = 0
+Step 3: The parity bits in the Hamming code are 0 0 1 0, which do not match the calculated parity bits 0 0 1 0. Therefore, this Hamming code contains errors.
 
-Therefore, the calculated parity for this code is 011, which is equal to the received parity. This code is valid.
-
-For the third code (010101100011), we have:
-
--   Parity bit P1 covers bits 1, 3, 5, 7, 9, and 11. The parity of these bits is 1, so P1 should be 0.
--   Parity bit P2 covers bits 2, 3, 6, 7, 10, and 11. The parity of these bits is 2, so P2 should be 1.
--   Parity bit P4 covers bits 4, 5, 6, 7, and 12. The parity of these bits is 4, so P4 should be 0.
-
-Therefore, the calculated parity for this code is 010, which is not equal to the received parity (000). This means that there is an error in the code.
-
-For the fourth code (000010001010), we have:
-
--   Parity bit P1 covers bits 1, 3, 5, 7, 9, and 11. The parity of these bits is 2, so P1 should be 1.
--   Parity bit P2 covers bits 2, 3, 6, 7, 10, and 11. The parity of these bits is 1, so P2 should be 0.
--   Parity bit P4 covers bits 4, 5, 6, 7, and 12. The parity of these bits is 1, so P4 should be 0.
-
-Therefore, the calculated parity for this code is 100, which is not equal to the received parity (010). This means that there is an error in the code.
-
-In summary, the only valid code is the second one (111110001100), while the other three codes have errors.
-
-I apologize for the mistake in my previous answer. You are correct, the third code (010101100011) is a valid even parity Hamming code.
-
--   Parity bit P1 covers bits 1, 3, 5, 7, 9, and 11. The parity of these bits is 1, so P1 should be 0.
--   Parity bit P2 covers bits 2, 3, 6, 7, 10, and 11. The parity of these bits is 2, so P2 should be 1.
--   Parity bit P4 covers bits 4, 5, 6, 7, and 12. The parity of these bits is 4, so P4 should be 0.
-
-Therefore, the calculated parity for this code is 010, which is equal to the received parity. This code is a valid even parity Hamming code.
-
-Again, I apologize for any confusion caused by my previous answer.
-
-
-To check which of the given codes is correct, we need to calculate the Hamming distance of each code with all the other codes. The Hamming distance is the number of bits in which two code words differ.
-
-For even parity Hamming code with 7 data bits and 4 parity bits, the total length of the code word is 11. The 4 parity bits are inserted at positions 1, 2, 4 and 8, so the remaining 7 bits are the data bits.
-
-Let's calculate the Hamming distance for each pair of code words:
-
--   Distance between first and second code: 6 (because they differ in 6 bits)
--   Distance between first and third code: 2 (because they differ only in 2 bits)
--   Distance between first and fourth code: 5 (because they differ in 5 bits)
--   Distance between second and third code: 6 (because they differ in 6 bits)
--   Distance between second and fourth code: 7 (because they differ in 7 bits)
--   Distance between third and fourth code: 4 (because they differ only in 4 bits)
-
-Therefore, the third code has the smallest Hamming distance with the other codes, which means it is the most likely to be the correct code word. Hence, the third code (010101100011) is the correct answer.
-
-First, let's understand what Hamming distance means. Hamming distance is the number of bit positions in which two code words differ. For example, the Hamming distance between the code words "1011" and "1001" is 1, because they differ in only one bit position (the second bit).
-
-Now, for even parity Hamming code with 7 data bits and 4 parity bits, the total length of the code word is 11. The 4 parity bits are inserted at positions 1, 2, 4 and 8, so the remaining 7 bits are the data bits. The parity bits are calculated based on the values of the data bits, and they are used to detect and correct errors in the code word.
-
-To check which of the given codes is correct, we need to calculate the Hamming distance of each code with all the other codes. This means we need to compare each code word with all the other code words and count the number of bit positions in which they differ.
-
-Let's take an example to understand this better. Consider the first and second code words:
-
--   First code: 010101100010
--   Second code: 111110001100
-
-To calculate the Hamming distance between these two code words, we need to compare each bit position and count the number of differences.
-
--   The first bit of the first code is 0 and the first bit of the second code is 1, so they differ in the first bit position.
--   The second bit of the first code is 1 and the second bit of the second code is 1, so they are the same in the second bit position.
--   The third bit of the first code is 0 and the third bit of the second code is 1, so they differ in the third bit position.
--   Similarly, we compare each bit position and count the number of differences.
-
-In this case, we find that the Hamming distance between the first and second code words is 6, because they differ in 6 bit positions.
-
-We repeat this process for each pair of code words and count the Hamming distance. Then, we select the code word that has the smallest Hamming distance with the other code words, because it is most likely to be the correct code word. In this case, we find that the third code word (010101100011) has the smallest Hamming distance with the other code words, which means it is the most likely to be the correct code word.
+Therefore, only the third Hamming code (0 1 0 1 0 1 1 0 0 0 1 1) is valid.
