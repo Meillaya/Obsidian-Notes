@@ -113,7 +113,81 @@ By testing the program with these boundary values, we can ensure that it behaves
 
 b)
 
+Here is a set of test cases that supports boundary testing for the `bonusCheck` program using the boundary values identified:
 
+1.  Test case 1: Test minimum input value (1 bonus point) and Gold customer status.
+
+Inputs: 1, true
+
+Expected output: FULLPRICE
+
+2.  Test case 2: Test minimum input value (1 bonus point) and non-Gold customer status.
+
+Inputs: 1, false
+
+Expected output: FULLPRICE
+
+3.  Test case 3: Test maximum input value for non-Gold customers (149 bonus points) and non-Gold customer status.
+
+Inputs: 149, false
+
+Expected output: DISCOUNT
+
+4.  Test case 4: Test maximum input value for non-Gold customers (149 bonus points + 1) and non-Gold customer status.
+
+Inputs: 150, false
+
+Expected output: FULLPRICE
+
+5.  Test case 5: Test minimum input value for Gold customers (100 bonus points) and Gold customer status.
+
+Inputs: 100, true
+
+Expected output: FULLPRICE
+
+6.  Test case 6: Test minimum input value for Gold customers (100 bonus points + 1) and Gold customer status.
+
+Inputs: 101, true
+
+Expected output: DISCOUNT
+
+7.  Test case 7: Test maximum input value for any customer (positive infinity) and Gold customer status.
+
+Inputs: infinity, true
+
+Expected output: DISCOUNT
+
+8.  Test case 8: Test maximum input value for any customer (positive infinity) and non-Gold customer status.
+
+Inputs: infinity, false
+
+Expected output: DISCOUNT
+
+By testing the program with these boundary test cases, we can ensure that it behaves correctly at the edges of the input domain and produces the expected output.
+
+c)
+
+Yes, the set of boundary test cases I provided in my previous answer represents the minimum number of tests required to ensure that the `bonusCheck` program behaves correctly at the boundaries of the input domain.
+
+Each test case covers a different boundary value or boundary condition, and by testing these values we can ensure that the program produces the correct output for each boundary condition. Any fewer tests would leave some boundary conditions untested, and any additional tests would be redundant or equivalent to the ones already identified.
+
+Therefore, this set of boundary test cases represents the minimum number of tests required to ensure that the `bonusCheck` program behaves correctly at the boundaries of the input domain.
+
+d)
+
+The set of test cases I provided for boundary value testing covers all of the critical boundary conditions for the `bonusCheck` program. Each test case represents a unique boundary value or boundary condition, and together they provide comprehensive coverage of the input domain.
+
+A good set of test cases for boundary value testing should include test cases for each of the critical boundary values and conditions, while minimizing the number of tests required to achieve this coverage. By testing each boundary value and condition, we can ensure that the program behaves correctly at the edges of the input domain, where errors are most likely to occur.
+
+In general, a good set of test cases for boundary value testing should:
+
+-   Cover all of the critical boundary values and conditions.
+-   Minimize the number of tests required to achieve this coverage.
+-   Include both valid and invalid input values to ensure proper error handling.
+-   Provide clear and concise descriptions of each test case and its expected outcome.
+-   Be easy to understand and execute.
+
+By following these guidelines, we can create a set of test cases that is sufficient and adequate for boundary value testing, ensuring that the program behaves correctly at its critical boundaries.
 
 # Q3
 
