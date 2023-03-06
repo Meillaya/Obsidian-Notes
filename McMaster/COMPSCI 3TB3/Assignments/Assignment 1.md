@@ -7,29 +7,11 @@ First derivation:
 S → NP VP
 →PN VP
 →Dave V
-
-→
-
-Dave runs
+→Dave runs
 
 Second derivation:
-
-S →
-
-NP VP
-
-→
-
-PN VP
-
-→
-
-PN V
-
-→
-
-PN runs
-
-→
-
-Dave runs
+S →NP VP
+→PN VP
+→PN V
+→PN runs
+→Dave runs
