@@ -1,0 +1,3 @@
+- Know the FSA algorithms (minimizeFSA, parseFSA) and time complexity
+- writing recursive descent parsers
+- basic python programming
