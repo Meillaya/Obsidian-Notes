@@ -29,6 +29,8 @@ Once `dist` is finalized, the algorithm constructs a new set of states `Q'` by m
 
 Overall, the `minimizeFSA` function implements a well-known algorithm for minimizing finite state automata, called the Hopcroft algorithm. This algorithm has a worst-case time complexity of O(n log n), where n is the number of states in the automaton. However, the actual running time of the algorithm depends on the structure of the input automaton and can be much faster in practice.
 
+The `minimizeFSA` function has a time complexity of O(|Q|³), where |Q| is the number of states in the input automaton, because it uses a variant of the Hopcroft algorithm, which has a time complexity of O(|Q|²|T|), where |T| is the size of the input alphabet. In this implementation, |T| is assumed to be constant, so the time complexity simplifies to O(|Q|²).
+
 ```python
 def parseFSA(fsa: str) -> FiniteStateAutomaton:
     fsa = [line for line in fsa.split('\n') if line.strip() != '']
@@ -53,6 +55,10 @@ The set of input symbols is computed by extracting the second component of each 
 Finally, the function returns a `FiniteStateAutomaton` object constructed from the input symbols, states, transitions, initial state, and final states.
 
 Overall, the `parseFSA` function implements a simple parser for a text-based format for representing finite state automata. This format is not standard, and there are many different ways to represent finite state automata in text form, but the basic idea is to encode the automaton as a list of lines, where each line represents a transition in the automaton. The `parseFSA` function assumes a specific format for the input string, and may fail or produce incorrect results if the input string is not well-formed or does not conform to the assumed format.
+
+The time complexity of `parseFSA` function is O(n), where n is the total number of characters in the input `fsa` string.
+
+This is because the function simply reads each line of the input string once, and then processes each line by splitting it into substrings, performing set unions and creating tuples. These operations all take constant time. The overall time complexity is therefore linear in the size of the input.
 
 ```python
 def equivalentFSA(a: FiniteStateAutomaton, aʹ: FiniteStateAutomaton, printMap = False) -> bool:
@@ -87,6 +93,8 @@ Finally, the function checks whether the set of final states of `a'` is the imag
 
 The time complexity of the `equivalentFSA` function depends on the size of the input finite state automata `a` and `aʹ`, as well as on the size of the output of the `minimizeFSA` function and the `totalFSA` function, which in turn depend on the input automata.
 
+The `equivalentFSA` function uses the `minimizeFSA` and `totalFSA` functions, so its time complexity is at least O(|Q|²) for each input automaton. In addition, the function uses a breadth-first search algorithm to explore the state space of the two automata and check if they are equivalent. The time complexity of the BFS algorithm is O(|Q|²|T|), where |T| is the size of the input alphabet. Therefore, the overall time complexity of the `equivalentFSA` function is O(|Q|³|T|).
+
 ```python
 def totalFSA(A: FiniteStateAutomaton, t = -1) -> FiniteStateAutomaton:
     T = set('abcdefghijklmnopqrstuvwxyz') # T is vocabulary, t is trap state
@@ -107,12 +115,18 @@ def renameFSA(fsa: FiniteStateAutomaton) -> FiniteStateAutomaton:
     Fʹ = {m[q] for q in fsa.F}
     return FiniteStateAutomaton(fsa.T, Qʹ, Rʹ, qʹ0, Fʹ)
 ```
-This code defines two functions: `totalFSA` and `renameFSA` that work with finite state automata (FSA) represented as `FiniteStateAutomaton` objects.
+`totalFSA` is an algorithm that takes a finite state automaton (FSA) `A` as input and returns a new FSA `A'` that is "total". A total FSA is one in which there exists a transition from every state on every input symbol. If the input FSA `A` is already total, then `totalFSA` simply returns `A`.
 
-The `totalFSA` function takes as input an FSA `A` and an optional parameter `t`. The function returns an FSA with the same vocabulary `T` as `A` (in this case, T is set to the alphabet of lowercase letters), but with some additional states and transitions. If no transition exists from any state `q` in `A` to any other state for some letter `a` in the vocabulary, then a transition from `q` to a trap state `t` for `a` is added. If the trap state `t` already exists in the transitions, the function does not add it to the set of states `Q`, but does add transitions from `t` to `t` for all letters in the vocabulary.
+If `A` is not total, `totalFSA` adds a new "trap" state `t` to `A` and creates transitions from `t` to itself on every input symbol that does not already have a transition defined in `A`. Then `totalFSA` returns the new FSA `A'` that includes the original transitions of `A` as well as the newly added transitions to `t`.
 
-The `renameFSA` function takes as input an FSA `fsa` and returns a new FSA with the same transitions but with the states renamed to be integers starting from 0. This is done by creating a mapping `m` from the original states to integers, and then creating new sets of states `Qʹ`, transitions `Rʹ`, initial state `qʹ0`, and final states `Fʹ` based on this mapping.
+The time complexity of `totalFSA` is O(|T||Q|^2), where |T| is the size of the vocabulary and |Q| is the number of states in the FSA.
 
-The time complexity of the `totalFSA` function is `O(|Q| * |T|)`, where `|Q|` is the number of states in the finite state automaton (FSA) and `|T|` is the size of the vocabulary. This is because for each state in the FSA and for each symbol in the vocabulary, the function checks whether there is a transition for that state and symbol, and if not, it adds a transition to the trap state.
+`renameFSA` is an algorithm that takes an FSA `fsa` as input and returns a new FSA with its states renamed to the integers 0 to |Q|-1, where |Q| is the number of states in `fsa`. This is done to make it easier to compare FSAs for equivalence, since the state names may not be the same across different FSAs.
 
-The time complexity of the `renameFSA` function is `O(|Q|)`. This is because the function performs a single iteration over all states of the FSA, renaming them with consecutive integers, and storing the mapping in a dictionary. The calculation of the renamed transition relations and final states is also a single iteration over the original transition relations and final states, respectively.
+The algorithm first creates a dictionary `m` that maps each state in `fsa` to a unique integer. Then it creates a new set of states `Q'` that are simply the integers from 0 to |Q|-1. The transitions in the new FSA `R'` are created by mapping each state in the original FSA `fsa` to its corresponding integer in `Q'`.
+
+The time complexity of `renameFSA` is O(|Q| + |R|), where |Q| is the number of states in `fsa` and |R| is the number of transitions in `fsa`.'
+
+The time complexity of `totalFSA` is O(|Q| * |T|^2), where |Q| is the number of states in the input automaton and |T| is the size of the vocabulary. This is because the function first iterates through all possible transitions (|Q| * |T|^2), and then checks whether a trap state needs to be added, which requires checking each state to see if it has a transition for every symbol in the vocabulary (|Q| * |T|). The overall time complexity is dominated by the first step, so the function runs in O(|Q| * |T|^2) time.
+
+The time complexity of `renameFSA` is O(|Q|^2), where |Q| is the number of states in the input automaton. This is because the function creates a dictionary that maps each state to a new unique identifier, which requires iterating through all states once (|Q|), and then updating each transition in the automaton to use the new identifiers (another |Q| operations). The overall time complexity is dominated by the first step, so the function runs in O(|Q|^2) time.

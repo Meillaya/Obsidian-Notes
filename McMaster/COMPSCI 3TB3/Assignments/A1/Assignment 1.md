@@ -140,7 +140,7 @@ S →NP VP
 
 # 06 Generated Language aⁿbcⁿ (Lab)
 
-Prove formally that `L(G₃) = {aⁿbcⁿ | n ≥ 0}`! [8 points]
+Prove formally that `L(G₃) = {aⁿbcⁿ | n ≥ 0}`!
 
 We prove this formally by inclusion in both directions. By definition of $L\left(G_3\right)$.
 
