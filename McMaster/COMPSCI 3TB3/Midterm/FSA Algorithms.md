@@ -18,6 +18,7 @@ def minimizeFSA(fsa: FiniteStateAutomaton) -> FiniteStateAutomaton:
     return FiniteStateAutomaton(fsa.T, Qʹ, Rʹ, qʹ0, Fʹ)
 ```
 
+
 This code implements a function `minimizeFSA` that takes a finite state automaton (FSA) as input and returns a minimized version of the input FSA.
 
 A finite state automaton (FSA) is a mathematical model of computation that consists of a finite set of states, a set of transitions between states, and a set of final or accepting states.
