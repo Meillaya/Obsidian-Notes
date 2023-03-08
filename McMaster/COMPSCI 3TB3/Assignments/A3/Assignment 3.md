@@ -345,7 +345,7 @@ m n o,pq r,stuv1
 
 The `%%bash` cell magic runs the cell in the bash shell; the `%%capture output` cell magic captures the output of the cell in the Python variable `output`.
 
-```
+```bash
 %%capture output
 %%bash
 #sed -r 's/TODO/TODO/g' data/q.csv
@@ -353,6 +353,14 @@ sed 's/,.*//' data/q.csv
 
 print(output) # for testing
 ```
+
+Here is an explanation of the command:
+
+-   `s/,.*//`
+-   `s/` - start of the substitution command
+-   `,` - matches a comma character
+-   `.*` - matches any number of characters after the comma
+-   `//` - replaces the matched text with nothing (i.e., deletes it)
 
 ```python
 assert str(output) == """a
@@ -364,5 +372,125 @@ m n o
 
 Write an `sed` command to extract and output the second column
 
+```bash
+%%capture output
+%%bash
+sed 's/[^,]*,\([^,]*\),.*/\1/' data/q.csv
+print(output) # for testing
 ```
+This command uses the `sed` command to manipulate text in a file named `q.csv` under the `data` directory. The `sed` command is a stream editor that can be used to modify text.
+
+The `s` command in `sed` stands for "substitute". The regular expression pattern inside the first pair of forward slashes `/.../` matches a specific pattern in the text, and the second part after the second forward slash is the replacement text.
+
+Here is an explanation of the command:
+
+-   `s/[^,]*,\([^,]*\),.*/\1/`
+-   `s/` - start of the substitution command
+-   `[^,]*,` - matches any character that is not a comma (`,`) followed by a comma. The asterisk (`*`) matches zero or more occurrences of the preceding character class.
+-   `\([^,]*\),` - matches any character that is not a comma (`,`) between two commas and captures it in a group. The parentheses (`\(` and `\)`) define a capture group that can be referred to later with `\1`.
+-   `.*` - matches any number of characters after the captured group.
+-   `\1` - replaces the entire matched text with the captured group.
+
+Therefore, the command will search for a pattern in the `q.csv` file where there are three comma-separated fields and replace the entire line with the second field of each line. The command assumes that the second field of each line does not contain any commas.
+
+```python
+assert str(output) == """b
+e
+i
+pq r
+"""
+```
+
+Write an `sed` command to extract and output the third column
+
+```bash
+%%capture output
+%%bash
+sed 's/^\([^,]*\),\([^,]*\),\([^,]*\).*/\3/' data/q.csv
+
+# Explanation:
+
+# ^ matches the beginning of a line.
+# [^,]* matches zero or more characters that are not a comma.
+# \(...\) creates a capturing group.
+# , matches a single comma.
+# .* matches any number of characters until the end of the line.
+# \3 outputs the contents of the third capturing group.
+
+print(output) # for testing
+```
+
+Here is an explanation of the command:
+
+-   `s/^\([^,]*\),\([^,]*\),\([^,]*\).*/\3/`
+-   `s/` - start of the substitution command
+-   `^` - matches the beginning of the line
+-   `\([^,]*\)` - matches any character that is not a comma (`,`) and captures it in a group. The parentheses (`\(` and `\)`) define a capture group that can be referred to later with `\1`, `\2`, or `\3`, depending on which group is being referred to.
+-   `,` - matches a comma character
+-   `\([^,]*\)` - matches any character that is not a comma (`,`) and captures it in a group.
+-   `,` - matches another comma character
+-   `\([^,]*\)` - matches any character that is not a comma (`,`) and captures it in a group.
+-   `.*` - matches any number of characters after the third captured group.
+-   `\3` - replaces the entire matched text with the third captured group.
+
+Therefore, the command will search for a pattern in the `q.csv` file where there are three comma-separated fields at the beginning of each line and replace the entire line with the third field of each line. The command assumes that each line in the `q.csv` file has exactly three comma-separated fields at the beginning of the line.
+```python
+assert str(output) == """c
+f
+jkl
+stuv1
+"""
+```
+
+
+# 11 Lowercasing HTML tags (sed)
+
+Consider `IMG` tags in HTML files, as in:
+
+```html
+%%writefile data/q.html
+<img src="PiCtuRe.PnG "/>
+<img src="PiCtuRe.PnG"></img>
+<img src="PiCtuRe.PnG">alt</img>
+<img src="PiCtuRe.PnG"> alt   </img>
+<img src ="PiCtuRe.PnG" />
+<img src = "PiCtuRe.PnG"/>
+<img onclick="alert('Clicked!')" src = "PiCtuRe.PnG"/>
+```
+
+ Write an `sed` command to lowercase `SRC` values. For example, `<img   src="PiCtuRe.PnG">` should be replace by `<img   src="picture.png">`. Note that there can be arbitrary space around src and = and before >.
+ 
+``` bash
+%%capture output
+%%bash
+#sed -r 's/TODO/TODO/g' data/q.html
+# sed 's/\(<img[^>]*src *= *"\)[^"]*\("[^>]*>\)/\1\L&\E\2/' data/q.html
+sed 's/\(<img[^>]*src *= *\)"\([^"]*\)"/\1"\L\2"/Ig' data/q.html
+print(output) # for testing
+```
+
+Here is an explanation of the command:
+
+-   `s/` - start of the substitution command
+-   `\( ... \)` - defines a capture group, which can be referred to later with `\1`
+-   `<img[^>]*src *= *"` - matches an `img` tag with an `src` attribute, and captures everything up to the opening double quote of the `src` attribute in the first capture group. The `[^>]*` matches any characters except the `>` character, which ends the opening `img` tag. The `src *= *"` matches the `src` attribute name and any number of spaces before the opening double quote of the attribute value.
+-   `"\([^"]*\)"` - matches the value of the `src` attribute inside double quotes, and captures it in the second capture group.
+-   `/` - separates the search pattern from the replacement pattern
+-   `\1` - replaces the entire matched text with the first capture group, which is everything before the opening double quote of the `src` attribute.
+-   `"` - inserts a double quote character in the replacement pattern
+-   `\L\2` - converts the second capture group (the value of the `src` attribute) to lowercase using the `\L` command, and inserts it in the replacement pattern.
+-   `"` - inserts another double quote character in the replacement pattern
+-   `/` - end of the substitution command
+
+Therefore, the command will search for all `img` tags with an `src` attribute in the `q.html` file, and replace the value of the `src` attribute with a lowercase version of itself. The opening double quote of the `src` attribute value is preserved, and the closing double quote of the `src` attribute value is replaced with a new closing double quote. Any spaces around the equals sign between the `src` attribute name and value are also preserved.
+
+```python
+assert str(output) == """<img src="picture.png "/>
+<img src="picture.png"></img>
+<img src="picture.png">alt</img>
+<img src="picture.png"> alt   </img>
+<img src ="picture.png" />
+<img src = "picture.png"/>
+<img onclick="alert('Clicked!')" src = "picture.png"/>
+"""
 ```
