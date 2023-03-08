@@ -126,3 +126,36 @@ trees = list(parser.parse(['a', '-', 'b', '+', 'c', '-', 'd']))
 # for t in trees: print(t)
 trees[0].pretty_print()
 ```
+
+3. Write a grammar such that `+` and `–` bind equally strong but associate to the left, i.e. the above sentence would be evaluated as `(( a – b) + c) – d`. Draw the parse tree for `a – b + c – d`!
+
+```python
+groucho_grammar = nltk.CFG.fromstring("""
+E -> E P T | T
+T -> T N F | F
+F -> E | N | 'a' | 'b' | 'c' | 'd'
+N -> '+'
+P -> '-'
+""")
+parser = nltk.ChartParser(groucho_grammar)
+trees = list(parser.parse(['a', '-', 'b', '+', 'c', '-', 'd']))
+# for t in trees: print(t)
+trees[0].pretty_print()
+```
+
+4. Write a grammar such that `+` and `–` bind equally strong but associate to the right, i.e. the above sentence would be evaluated as `a – (b + (c – d))`. Draw the parse tree for `a – b + c – d`!
+
+```python
+groucho_grammar = nltk.CFG.fromstring("""
+E -> T | E N T 
+T -> F | T N F
+F -> N | N E N
+N -> 'a' | 'b' | 'c' | 'd' | '+' | '-'
+""")
+parser = nltk.ChartParser(groucho_grammar)
+trees = list(parser.parse(['a', '-', 'b', '+', 'c', '-', 'd']))
+# for t in trees: print(t)
+trees[0].pretty_print()
+```
+
+# 04
