@@ -217,4 +217,11 @@ S = ('S')
 P = {('S', 'abcd'), ('S', 'aXbcd'),('S', 'abcYd'),('S', 'aXbcYd'), ('X', 'aXc'), ('X', 'ac'), ('Y', 'bYd') ,('Y', 'bd'),('cb', 'bc') }
 ```
 
-
+```python
+assert derivable(S, P , 'abcd')
+assert derivable(S, P , 'aabccd')
+assert derivable(S, P , 'aabbbccddd')
+assert not derivable(S, P , 'aabbcd')
+assert not derivable(S, P , 'abccdd')
+assert not derivable(S, P , 'acbd')
+```
