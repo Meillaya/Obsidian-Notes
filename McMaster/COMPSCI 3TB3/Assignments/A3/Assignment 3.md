@@ -194,3 +194,175 @@ def accepts(fsa: FiniteStateAutomaton, τ: str) -> bool:
         else: return False
     return q in fsa.F
 ```
+
+```python
+def REToFSA(re):
+    global QC
+    if re == '': q0 = str(QC); QC +=1; return FiniteStateAutomaton(set(), {q0}, set(), q0, {q0})
+    elif type(re) == str:
+        q0 = str(QC); QC +=1; q1 = str(QC); QC += 1
+        return FiniteStateAutomaton({re}, {q0, q1}, {(q0, re, q1)}, q0, {q1})
+    elif type(re) == Choice:
+        A1, A2 = REToFSA(re.e1), REToFSA(re.e2)
+        R2 = {(A1.q0 if q == A2.q0 else q, a, r) for (q, a, r) in A2.R} # A2.q0 renamed to A1.q0 in A2.R
+        F2 = {A1.q0 if q == A2.q0 else q for q in A2.F} # A2.q0 renamed to A1.q0 in A2.F
+        return FiniteStateAutomaton(A1.T | A2.T, A1.Q | A2.Q, A1.R | R2, A1.q0, A1.F | F2)
+    elif type(re) == Conc:
+        A1, A2 = REToFSA(re.e1), REToFSA(re.e2)
+        R = A1.R | {(f, a, r) for (q, a, r) in A2.R if q == A2.q0 for f in A1.F} | \
+            {(q, a, r) for (q, a, r) in A2.R if q != A2.q0}
+        F = (A2.F - {A2.q0}) | (A1.F if A2.q0 in A2.F else set())
+        return FiniteStateAutomaton(A1.T | A2.T, A1.Q | A2.Q, R, A1.q0, F)
+    elif type(re) == Star:
+        A = REToFSA(re.e)
+        R = A.R | {(f, a, r) for (q, a, r) in A.R if q == A.q0 for f in A.F}
+        return FiniteStateAutomaton(A.T, A.Q, R, A.q0, {A.q0} | A.F)
+    else: raise Exception('not a regular expression')
+
+def convertRegExToFSA(re):
+    global QC; QC = 0
+    return REToFSA(re)
+```
+
+Test your answer by expressing it with Python constructors `Choice`, `Conc`, `Star` and calling it `I`.
+
+```python
+def selectString(y):
+    result = y[0]
+    for x in range(1, len(y)):
+        result = Choice(result, y[x])
+    return result
+
+Z = selectString("abcdefghijklmnopqrtuvwxyz")
+X = selectString("0123456789")
+Y = Star(Conc(Star(Z), Star(X)))
+I = Conc(Z,Y)
+```
+
+```python
+A = deterministicFSA(convertRegExToFSA(I))
+assert accepts(A, 'cloud7')
+assert accepts(A, 'if')
+assert accepts(A, 'b12')
+assert not accepts(A, '007')
+assert not accepts(A, '15b')
+assert not accepts(A, 'B12')
+assert not accepts(A, 'e-mail')
+```
+
+# 09 Finding E-mail Addresses 
+
+For your graduation party you like to invite all your friends of whom you have either an e-mail address or a telephone number. As you never had time to keep an address book, you like to search for these in all your files using `grep`. In the cells below, write `grep` commands. The `%%bash` cell magic runs the cell in the bash shell; the `%%capture output` cell magic captures the output of the cell in the Python variable `output`.
+
+1.  E-mail addresses start with one or more upper case letters `A-Z`, lower case letters `a-z`, and symbols `+-._`, followed by the `@` sign, followed by a domain. The domain is sequence of subdomains separated by `.`, where each subdomain consists of a number upper and lower case letters, digits, and symbol `-`. There have to be at least two subdomains (i.e. one `.`). The last subdomain is called the top-level domain and must consists only of two to six upper or lower case letters. E-mail addresses must start at the beginning of a line or after a separator and must end at the end of a line or a separator. Write a shell command using `grep` that, from the directory in which it is started, recursively visits all subdirectories and prints those lines of files that contain an e-mail address. Use `\b` as the separator.
+
+```bash
+%%capture output
+%%bash
+# grep -rEo "\b[A-Za-z0-9+._-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b" \data
+grep -rE '\b[A-Za-z+-._]+@[A-Za-z0-9-]+.[A-Za-z]{2,6}\b' \data
+
+print(output) # for testing
+```
+The regular expression pattern being searched for is enclosed in single quotes `'...'` and consists of three parts separated by the `@` symbol:
+
+1.  `\b[A-Za-z+-._]+` - matches the username of the email address. `\b` specifies a word boundary and `[A-Za-z+-._]+` matches one or more alphabetical letters, plus sign, hyphen, period or underscore characters.
+    
+2.  `@[A-Za-z0-9-]+.` - matches the at symbol (@) and the domain name of the email address. `[A-Za-z0-9-]+` matches one or more alphabetical letters or digits, and hyphen characters. The dot (.) outside the square brackets matches a literal dot character.
+    
+3.  `[A-Za-z]{2,6}\b` - matches the top-level domain of the email address, such as com, edu, gov, etc. `[A-Za-z]{2,6}` matches 2 to 6 alphabetical letters and the `\b` specifies another word boundary.
+```python
+assert str(output) == """data/03/friends.txt:abcd@abc.ca 
+data/03/friends.txt:abcde@ab-BC.com 
+data/03/friends.txt:@e-mail@add.ress@
+data/02/other-friends.txt:ABCabc+-._@ancbd.ca
+data/02/other-friends.txt:ABCabc+-._@mcmaster.io.ca
+data/02/other-friends.txt:ABCabc+-._@school.image
+data/02/other-friends.txt:ABCabc+-._@school3-computer.image
+data/02/other-friends.txt:ABCabc+-._@school3-IT.image.tor.chrome.ca
+data/02/other-friends.txt:ABCabc+-._@school3-IT.image.tor.chrome.canadannn
+data/02/other-friends.txt:ABC123abc+-._@school3-IT.imageal.tor.chrome.canadannn
+data/01/friends.txt:Marion Floyd (905 263-7740 jpflip@yahoo.com
+data/01/friends.txt:Cora Larson (905) 255-8305 frederic@yahoo.ca
+data/01/friends.txt:Van Craig 905) 608-2616 chunzi@aol.com
+data/01/friends.txt:Emilio Morrison (905) 2877753 cantu@sbcglobal.net
+data/01/friends.txt:Ismael Hanson (905) 755 9372 satch@hotmail.com
+data/01/friends.txt:Wayne Douglas (905)222-3316 tfinniga@verizon.net
+data/01/friends.txt:Tomas Carlson (905746-0359 ardagna@me.com
+data/01/friends.txt:Laurence Newman 9057803232 jaarnial@icloud.com
+data/01/friends.txt:Lori Sherman 905-543-7753 chaki@att.net
+data/01/friends.txt:Gladys Brock (539) 728-2363 lukka@icloud.com
+"""
+```
+
+You are looking for telephone numbers in the `905` area for your party. Valid numbers are of the form `(905) 123 4567`, `(905) 1234567`, `905-123-4567`. However, `9051234567`, as well as `905) 123 4567`, `905-123 4567`, are not. Telephone addresses must start at a the beginning of a line or after a separator and must end at the end of a line or a separator. Write a shell command using grep that, from the directory in which it is started, recursively visits all subdirectories and prints those lines of files that contain a telephone number.
+
+```bash
+%%capture output
+%%bash
+# grep -rE '^(\(905\) [0-9]{3} [0-9]{4})|(\(905\) [0-9]{7})|(905-[0-9]{3}-[0-9]{4})' \data
+grep -Er '(\(905\) [0-9]{3} [0-9]{4})|(\(905\) [0-9]{7})|905-[0-9]{3}-[0-9]{4}' \data
+
+print(output) # for testing
+```
+This command searches for specific phone number patterns in files under the directory named "data" using the `grep` command with the following options:
+
+-   `-E` option enables the extended regular expression syntax which allows us to use the `|` character to specify multiple patterns.
+-   `-r` option enables recursive search, which means it will search for files in subdirectories as well.
+
+The regular expression pattern being searched for is enclosed in single quotes `'...'` and consists of three parts separated by the `|` character:
+
+1.  `(\(905\) [0-9]{3} [0-9]{4})` - matches phone numbers in the format `(905) xxx xxxx`, where `x` can be any digit from 0 to 9. The backslashes are used to escape the parentheses and prevent them from being interpreted as special characters by the shell.
+    
+2.  `(\(905\) [0-9]{7})` - matches phone numbers in the format `(905) xxxxxxx`, where `x` can be any digit from 0 to 9.
+    
+3.  `905-[0-9]{3}-[0-9]{4}` - matches phone numbers in the format `905-xxx-xxxx`, where `x` can be any digit from 0 to 9.
+
+```python
+assert str(output) == """data/03/friends.txt:(905) 123 4567
+data/03/friends.txt:(905) 1234567
+data/03/friends.txt:905-123-4567
+data/02/other-friends.txt:(905) 123 4567
+data/02/other-friends.txt:(905) 1234567
+data/02/other-friends.txt:905-123-4567
+data/01/friends.txt:Emilio Morrison (905) 2877753 cantu@sbcglobal.net
+data/01/friends.txt:Ismael Hanson (905) 755 9372 satch@hotmail.com
+data/01/friends.txt:Lori Sherman 905-543-7753 chaki@att.net
+"""
+```
+
+# 10 Extracting Columns from CSV
+
+Consider a file with columns separated by a single comma. Write an `sed` command to extract and output only the first column. Apply your command to the file `data/q.csv`:
+
+```
+%%writefile data/q.csv
+a,b,c
+d,e,f
+gh,i,jkl
+m n o,pq r,stuv1
+```
+
+The `%%bash` cell magic runs the cell in the bash shell; the `%%capture output` cell magic captures the output of the cell in the Python variable `output`.
+
+```
+%%capture output
+%%bash
+#sed -r 's/TODO/TODO/g' data/q.csv
+sed 's/,.*//' data/q.csv
+
+print(output) # for testing
+```
+
+```python
+assert str(output) == """a
+d
+gh
+m n o
+"""
+```
+
+Write an `sed` command to extract and output the second column
+
+```
+```
