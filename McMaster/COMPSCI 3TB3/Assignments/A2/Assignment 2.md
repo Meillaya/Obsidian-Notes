@@ -158,4 +158,63 @@ trees = list(parser.parse(['a', '-', 'b', '+', 'c', '-', 'd']))
 trees[0].pretty_print()
 ```
 
-# 04
+# 04 Grammar for aⁱbⁿcⁱdⁿ
+Procedure `derivable` from the course notes can be used for unrestricted grammars, not just for context-sensitive grammar. The procedure will terminate with `true` or `false` for context-sensitive grammars (_decision procedure_) but may or may not terminate for unrestricted grammars (_semi-decision procedure_).
+
+```python
+def derivable(S, P, ω):
+    # S: start symbol, a string, P: productions, a set of pairs of strings, ω: string
+    d0, d = {}, {S} # set of strings
+    while d != d0:
+        d0 = d #; print(d)
+        for (σ, τ) in P:
+            for π in d0:
+                i = π.find(σ, 0) #print('π, i', π, i)
+                while i != - 1:
+                    χ = π[0:i] + τ + π[i + len(σ):] #print('χ', χ)
+                    if χ == ω: return True
+                    elif len(χ) <= len(ω): d = d.union({χ})
+                    i = π.find(σ, i + 1) #print('d, i', d, i)
+    return False          
+```
+
+
+Use procedure `derivable` to show that `abc`, `aabbcc`, `aaabbbccc` are derivable in `G₄` but `aabc` and `abbc` are not! Define `S` and `P` in the cell below and run the next cell for testing.
+
+```
+S = ('S')
+P = {('S', 'abc'), ('S', 'aBSc'), ('Ba', 'aB'), ('Bb', 'bb')}
+```
+
+``` python
+assert derivable(S, P , 'abc')
+assert derivable(S, P , 'aabbcc')
+assert derivable(S, P , 'aaabbbccc')
+assert not derivable(S, P , 'aabc')
+assert not derivable(S, P , 'abbc')
+```
+
+Use procedure `derivable` to show that `abc`, `aabbcc`, `aaabbbccc` are derivable in `G₄'`, the context-sensitive version of `G₄`, but `aabc` and `abbc` are not!
+
+```
+S = ('S')
+P = {('S', 'Abc'), ('S', 'ABSc'), ('BA', 'BX'), ('BX', 'AX'), ('AX', 'AB'), ('Bb', 'bb'), ('A', 'a')}
+```
+
+```python
+assert derivable(S, P , 'abc')
+assert derivable(S, P , 'aabbcc')
+assert derivable(S, P , 'aaabbbccc')
+assert not derivable(S, P , 'aabc')
+assert not derivable(S, P , 'abbc')
+```
+
+
+Now consider the language `{aⁱbⁿcⁱdⁿ | i, n ≥ 1}`. Write a grammar for this language by defining `S` and `G` below and use procedure `derivable` to check that `abcd`, `aabccd`, `aabbbccddd` are derivable in but `aabbcd`, `abccdd`, `acbd` are not! The grammar does not have to be context-sensitive, but procedure `derivable` has to terminate.
+
+```
+S = ('S')
+P = {('S', 'abcd'), ('S', 'aXbcd'),('S', 'abcYd'),('S', 'aXbcYd'), ('X', 'aXc'), ('X', 'ac'), ('Y', 'bYd') ,('Y', 'bd'),('cb', 'bc') }
+```
+
+
