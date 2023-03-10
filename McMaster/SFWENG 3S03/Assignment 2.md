@@ -355,3 +355,7 @@ e)
 To cover all du-paths in the program, we need to have at least one test case that exercises each path, i.e., each def-use pair. The total number of unique du-paths in the program is 7, as listed in the previous answer.
 
 To cover all these paths, we need to design test cases that ensure each def node is executed at least once and that each use node is executed with the correct value from the corresponding def node. Therefore, we would need at least 7 test cases to cover all du-paths in this program.
+
+
+
+
